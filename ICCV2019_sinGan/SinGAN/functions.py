@@ -75,6 +75,8 @@ def convert_image_np_2d(inp):
     return inp
 
 def generate_noise(size,num_samp=1,device='cuda',type='gaussian', scale=1):
+    #tạo nhiễu (có 4 loại: gaussian, gaussian_mixture, uniform, uniform + poisson, poisson)
+    #mặc định gaussian
     if type == 'gaussian':
         noise = torch.randn(num_samp, size[0], round(size[1]/scale), round(size[2]/scale), device=device)
         noise = upsampling(noise,size[1], size[2])
@@ -135,6 +137,7 @@ def move_to_cpu(t):
     return t
 
 def calc_gradient_penalty(netD, real_data, fake_data, LAMBDA):
+    #Tính gradint penalty trong WGAN-GP
     #print real_data.size()
     alpha = torch.rand(1, 1)
     alpha = alpha.expand(real_data.size())
@@ -196,6 +199,7 @@ def read_image2np(opt):
     return x
 
 def save_networks(netG,netD,z,opt):
+    #Lưu networks
     torch.save(netG.state_dict(), '%s/netG.pth' % (opt.outf))
     torch.save(netD.state_dict(), '%s/netD.pth' % (opt.outf))
     torch.save(z, '%s/z_opt.pth' % (opt.outf))
