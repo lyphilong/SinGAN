@@ -6,12 +6,14 @@ import torch.nn.functional as F
 
 class ConvBlock(nn.Sequential):
     def __init__(self, in_channel, out_channel, ker_size, padd, stride):
+        #Khởi tại các block conv: bao gồm conv, batch, leakyRelu
         super(ConvBlock,self).__init__()
         self.add_module('conv',nn.Conv2d(in_channel ,out_channel,kernel_size=ker_size,stride=stride,padding=padd)),
         self.add_module('norm',nn.BatchNorm2d(out_channel)),
         self.add_module('LeakyRelu',nn.LeakyReLU(0.2, inplace=True))
 
 def weights_init(m):
+    #Khởi tạo các trọng số
     classname = m.__class__.__name__
     if classname.find('conv') != -1:
         m.weight.data.normal_(0.0, 0.02)
@@ -21,6 +23,10 @@ def weights_init(m):
    
 class WDiscriminator(nn.Module):
     def __init__(self, opt):
+        #Khởi tạo Discrimator
+        # + Head: 1 conv block
+        # + Body: 3 conv block
+        # + Tail: 1 conv block
         super(WDiscriminator, self).__init__()
         self.is_cuda = torch.cuda.is_available()
         N = int(opt.nfc)
